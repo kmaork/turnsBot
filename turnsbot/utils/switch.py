@@ -8,7 +8,7 @@ class NoSuchCaseException(Exception):
     case: Any
 
     def __str__(self):
-        return f'No such case "{self.case}"! Options are: {self.handler.cases.keys()}'
+        return f'No such case "{self.case}"! Options are: {self.switch.cases.keys()}'
 
 
 class Switch:

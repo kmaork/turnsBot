@@ -21,12 +21,13 @@ class BotAppUpdater:
         self.logger = logger
 
     def mount(self, app: BotApp):
-        for command, handler in app.handlers:
+        for command, handler in app.command_handlers:
             self.updater.dispatcher.add_handler(CommandHandler(command, handler))
 
     def run_dev(self):
         self.logger.info("Starting bot in dev mode")
         self.updater.start_polling()
+        self.updater.idle()
 
     def run_prod(self, config: ProdConfig):
         self.logger.info("Starting bot in prod mode")

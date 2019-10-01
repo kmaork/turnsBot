@@ -1,26 +1,32 @@
 import random
 from dataclasses import dataclass
 from logging import Logger
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CallbackContext
 
-from .utils import BotApp, handler
+from .utils import BotApp, command_handler
 
 
 @dataclass
 class TurnsBotApp(BotApp):
     logger: Logger
 
-    @handler('start')
+    @command_handler('start')
     def start_handler(self, update: Update, context: CallbackContext):
-        # Creating a handler-function for /start command
-        self.logger.info("User {} started bot".format(update.effective_user["id"]))
-        update.message.reply_text("Hello from Python!\nPress /random to get random number")
+        chat_id = update.effective_user['id']
+        self.logger.info(f'User {chat_id} started bot')
+        keyboard = [[InlineKeyboardButton('Adooba!', callback_data='blob'),
+                     InlineKeyboardButton('Berem berem!', callback_data='blob')]]
+        markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_html(text='Text:', reply_markup=markup)
 
-    @handler('random')
+    def __reply_keyboard(self, update: Update, context: CallbackContext):
+        keyboard = [['Dooda li doo', 'Bingabong']]
+        markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
+        update.message.reply_html(text='Text:', reply_markup=markup)
+
+    @command_handler('random')
     def random_handler(self, update: Update, context: CallbackContext):
-        # Creating a handler-function for /random command
-        print(update.effective_user)
         number = random.randint(0, 10)
         self.logger.info("User {} randomed number {}".format(update.effective_user["id"], number))
         update.message.reply_text("Random number: {}".format(number))
